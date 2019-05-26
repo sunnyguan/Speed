@@ -74,6 +74,9 @@ public class Player
         if ( hand.contains( c ) )
         {
             hand.remove( c );
+            if(autoRefill) {
+                refill();
+            }
             return true;
         }
         return false;
@@ -128,8 +131,12 @@ public class Player
     
     public static void main( String[] args ) throws IOException
     {
-        Player p = new Player(false);
+        Player p = new Player(true);
         p.init();
+    }
+    
+    public void refill() {
+        out.println("REFILL");
     }
 
     class UserInputRunner implements Runnable

@@ -56,6 +56,14 @@ public class SpeedServerThread extends Thread
                     game.stuckCount++;
                     if(game.stuckCount > 2) game.stuckCount %= 2;
                     if(game.stuckCount == 2) {
+                        game.flipSideDeck();
+                        String msg1 = "SETPILE|" + game.getCentralPile1Card().toString() + "|1";
+                        String msg2 = "SETPILE|" + game.getCentralPile2Card().toString() + "|2";
+                        out.println(msg1);
+                        out.println(msg2);
+                        otherPlayer.out.println( msg1 );
+                        otherPlayer.out.println( msg2 );
+                        game.stuckCount = 0;
                         System.out.println("Both players stuck.");
                     }
                 } else if (inputLine.startsWith( "HANDREMOVE" )) {
@@ -87,6 +95,12 @@ public class SpeedServerThread extends Thread
                         }
                     }
                     game.refill( id );
+                } else if (inputLine.startsWith( "GAMEOVER" )) {
+                    ArrayList<Card> hand = id == 1 ? game.getHand1() : game.getHand2();
+                    if(hand.isEmpty()) {
+                        out.println("YOUWIN");
+                        otherPlayer.out.println("YOULOSE");
+                    }
                 }
                 
                 System.out.println( inputLine );

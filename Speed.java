@@ -190,6 +190,14 @@ public class Speed
         }
         return true;
     }
+    
+    public Card getCentralPile1Card() {
+        return centralPile1.get( centralPile1.size() - 1 );
+    }
+    
+    public Card getCentralPile2Card() {
+        return centralPile2.get( centralPile2.size() - 1 );
+    }
 
     //TODO: change if necessary
     public boolean finish( Player p )
