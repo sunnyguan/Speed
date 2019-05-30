@@ -158,7 +158,7 @@ public class GameGUI extends JFrame
                 String ip = IPText.getText();
                 if ( IPText.getText().charAt( 0 ) != '1' )
                 {
-                    ip = "192.168.137.1";
+                    ip = "192.168.1.131";
                 }
                 player.init( ip );
                 // setName
@@ -227,53 +227,36 @@ public class GameGUI extends JFrame
     private static int[] hand2X = { myStartx, myStartx + playerdx, myStartx + 2 * playerdx, myStartx + 3 * playerdx,
         myStartx + 4 * playerdx };
 
-    private JLabel deck1;
+    private CardPanel deck1;
 
-    private JLabel deck2;
+    private CardPanel deck2;
 
     private void cardsInit( JLayeredPane pane )
     {
         myCards = new ArrayList<CardPanel>();
-        ArrayList<JLabel> theirCards = new ArrayList<JLabel>();
+        ArrayList<CardPanel> theirCards = new ArrayList<CardPanel>();
         ArrayList<Card> h1 = player.getHand();
         ImageIcon back = new ImageIcon( GameGUI.class.getResource( "/images/back.png" ) );
         for ( int i = 0; i < h1.size(); i++ )
         {
-            CardPanel cp = new CardPanel( h1.get( i ), i );
-            cp.setBounds( myStartx + playerdx * i, myStarty, 60, 92 );
+            CardPanel cp = new CardPanel( h1.get( i ), i , myStartx + playerdx * i, myStarty);
+            // cp.setBounds( myStartx + playerdx * i, myStarty, 60, 92 );
             myCards.add( cp );
             cp.setOpaque( true );
 
-            JLabel jp = new JLabel( "" );
-            jp.setBounds( otherStartx + playerdx * i, otherStarty, 87, 92 );
-            jp.setIcon( back );
+            CardPanel jp = new CardPanel( otherStartx + playerdx * i, otherStarty );
             theirCards.add( jp );
 
             pane.add( cp, new Integer( 2 ) );
             pane.add( jp, new Integer( 1 ) );
         }
 
-        JLabel central1 = new JLabel( "" );
-        JLabel central2 = new JLabel( "" );
-        JLabel side1 = new JLabel( "" );
-        JLabel side2 = new JLabel( "" );
-        deck1 = new JLabel( "" );
-        deck2 = new JLabel( "" );
-
-        side1.setBounds( centralX, centralY, 65, 92 );
-        central1.setBounds( centralX + centraldx, centralY, 60, 92 );
-        central2.setBounds( centralX + 2 * centraldx, centralY, 60, 92 );
-        side2.setBounds( centralX + 3 * centraldx, centralY, 65, 92 );
-        deck1.setBounds( 484, 331, 65, 92 );
-        deck2.setBounds( 41, 85, 65, 92 );
-
-        central1.setIcon( player.getPile1().getImage() );
-        central2.setIcon( player.getPile2().getImage() );
-
-        side1.setIcon( back );
-        side2.setIcon( back );
-        deck1.setIcon( back );
-        deck2.setIcon( back );
+        CardPanel central1 = new CardPanel( centralX + centraldx, centralY );
+        CardPanel central2 = new CardPanel( centralX + 2 * centraldx, centralY );
+        CardPanel side1 = new CardPanel( centralX, centralY );
+        CardPanel side2 = new CardPanel( centralX + 3 * centraldx, centralY );
+        deck1 = new CardPanel( 484, 331 );
+        deck2 = new CardPanel( 41, 85 );
 
         pane.add( central1, new Integer( 1 ) );
         pane.add( central2, new Integer( 1 ) );
@@ -321,7 +304,7 @@ public class GameGUI extends JFrame
                         }
                         Card c = player.getHand().get( i );
                         myCards.get( i ).setCard( c );
-                        myCards.get( i ).setIcon( c.getImage() );
+                        myCards.get( i ).setImage();
                         // check collision
                         if ( myCards.get( i ).isCollide1() )
                         {
@@ -338,8 +321,8 @@ public class GameGUI extends JFrame
                             stuckButton.setSelected( false );
                         }
                     }
-                    central1.setIcon( player.getPile1().getImage() );
-                    central2.setIcon( player.getPile2().getImage() );
+                    central1.setCard( player.getPile1() );
+                    central2.setCard( player.getPile2() );
 
                     pane.repaint();
                 }

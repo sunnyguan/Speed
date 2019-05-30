@@ -54,7 +54,7 @@ public class Card
         if ( img == null )
         {
             String imageURI = "/images/" + value + suite + ".png";
-            img = new ImageIcon( Card.class.getResource( imageURI ) );
+            img = new ImageIcon(imageURI);
         }
         return img;
     }

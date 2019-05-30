@@ -1,12 +1,15 @@
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -26,9 +29,9 @@ public class CardPanel extends JPanel
 
     private boolean deact = false;
 
-    private ImageIcon icon;
-
     private Card card;
+    
+    private BufferedImage image;
 
     private boolean released;
 
@@ -62,16 +65,6 @@ public class CardPanel extends JPanel
         this.deact = deact;
     }
 
-    public ImageIcon getIcon()
-    {
-        return icon;
-    }
-
-    public void setIcon( ImageIcon icon )
-    {
-        this.icon = icon;
-    }
-
     public Card getCard()
     {
         return card;
@@ -80,6 +73,7 @@ public class CardPanel extends JPanel
     public void setCard( Card card )
     {
         this.card = card;
+        setImage();
     }
 
     public boolean isReleased()
@@ -91,16 +85,46 @@ public class CardPanel extends JPanel
     {
         this.released = released;
     }
+    public void setImage () {
+        try
+        {
+            image = ImageIO.read(new File("images/" + card.getValue() + card.getSuite() + ".png"));
+        }
+        catch ( IOException e1 )
+        {
+            e1.printStackTrace();
+        }
+    }
+    
+    public void setBackImage() {
+        try
+        {
+            image = ImageIO.read(new File("images/back.png"));
+        }
+        catch ( IOException e1 )
+        {
+            e1.printStackTrace();
+        }
+    }
+    
+    public CardPanel(int x, int y) {
+        setBackImage();
+        this.setFont( new Font( "Serif", Font.ITALIC + Font.BOLD, 32 ) );
+        this.setBounds( x, y, 70, 92 );
+        setBackground( new Color( 0, 100, 0 ) );
+    }
 
-    public CardPanel( Card c, int index )
+    public CardPanel( Card c, int index, int x, int y )
     {
-        icon = c.getImage();
         this.card = c;
-        int x = GameGUI.myStartx + GameGUI.playerdx * index;
-        int y = GameGUI.myStarty;
+        setImage();
+        
+        // int x = GameGUI.myStartx + GameGUI.playerdx * index;
+        // int y = GameGUI.myStarty;
         textPt = new Point( x, y );
         oriPt = new Point( x, y );
         this.setFont( new Font( "Serif", Font.ITALIC + Font.BOLD, 32 ) );
+        this.setBounds( x, y, 60, 92 );
         this.addMouseListener( new MouseAdapter()
         {
 
@@ -153,6 +177,7 @@ public class CardPanel extends JPanel
                 }
             }
         } );
+        
         setBackground( new Color( 0, 100, 0 ) );
     }
 
@@ -169,7 +194,8 @@ public class CardPanel extends JPanel
         super.paintComponent( g );
         if ( !deact )
         {
-            icon.paintIcon( this, g, 0, 0 );
+            g.drawImage( image, 0, 0, null );
+            //icon.paintIcon( this, g, 0, 0 );
         }
     }
 
