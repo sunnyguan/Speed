@@ -14,9 +14,11 @@ public class SpeedServerThread extends Thread
     
     private Socket socket = null;
 
-    public SpeedServerThread otherPlayer = null;
+    private SpeedServerThread otherPlayer = null;
     
-    public Speed game;
+    private Speed game;
+    
+    private String name;
     
     public SpeedServerThread( Socket socket, Speed game, int id )
     {
@@ -24,6 +26,30 @@ public class SpeedServerThread extends Thread
         this.id = id;
         this.socket = socket;
         this.game = game;
+    }
+    
+    public String getPlayerName() {
+        return name;
+    }
+
+    public SpeedServerThread getOtherPlayer()
+    {
+        return otherPlayer;
+    }
+
+    public void setOtherPlayer( SpeedServerThread otherPlayer )
+    {
+        this.otherPlayer = otherPlayer;
+    }
+
+    public PrintWriter getOut()
+    {
+        return out;
+    }
+
+    public void setOut( PrintWriter out )
+    {
+        this.out = out;
     }
 
     public PrintWriter out;
@@ -37,6 +63,8 @@ public class SpeedServerThread extends Thread
             BufferedReader in = new BufferedReader(
                 new InputStreamReader( socket.getInputStream() ) );
             String inputLine = in.readLine();
+            name = inputLine.substring( 5 );
+            System.out.println(name + " joined the server.");
             
             if(id == 1) {
                 for(Card c : game.getHand1()) {
@@ -49,7 +77,6 @@ public class SpeedServerThread extends Thread
             }
             out.println("SETPILE|" + game.getCentralPile1().get( 0 ) + "|1");
             out.println("SETPILE|" + game.getCentralPile2().get( 0 ) + "|2");
-
             while ( ( inputLine = in.readLine() ) != null )
             {
                 if(inputLine.equals( "STUCK" )) {
@@ -68,8 +95,12 @@ public class SpeedServerThread extends Thread
                     }
                 } else if (inputLine.startsWith( "HANDREMOVE" )) {
                     game.removeCard( id, inputLine.split("\\|")[1] );
-                    // manual-refill TODO
-                    game.refill( id );
+                    ArrayList<Card> hand = getHand(id);
+                    Stack<Card> deck = getDeck(id);
+                    if(hand.isEmpty() && deck.isEmpty()) {
+                        gameOverAction();
+                        break;
+                    }
                 } else if (inputLine.startsWith( "MOVETOPILE" )) {
                     Card c = new Card(inputLine.split( "\\|" )[1]);
                     int pileNum = Integer.parseInt( inputLine.split( "\\|" )[2] );
@@ -82,8 +113,8 @@ public class SpeedServerThread extends Thread
                         otherPlayer.out.println( msg );
                     }
                 } else if (inputLine.startsWith( "REFILL" )) {
-                    ArrayList<Card> hand = id == 1 ? game.getHand1() : game.getHand2();
-                    Stack<Card> deck = id == 1 ? game.getDeck1() : game.getDeck2();
+                    ArrayList<Card> hand = getHand(id);
+                    Stack<Card> deck = getDeck(id);
                     
                     while(hand.size() < 5)
                     {
@@ -94,16 +125,13 @@ public class SpeedServerThread extends Thread
                             out.println("HANDADD|" + c.toString());
                         }
                     }
-                    game.refill( id );
-                } else if (inputLine.startsWith( "GAMEOVER" )) {
-                    ArrayList<Card> hand = id == 1 ? game.getHand1() : game.getHand2();
-                    if(hand.isEmpty()) {
-                        out.println("YOUWIN");
-                        otherPlayer.out.println("YOULOSE");
-                    }
+                } else if (inputLine.startsWith( "FGAMEOVER" )) { // TODO testing only!
+                    gameOverAction();
+                    break;
                 }
                 
                 System.out.println( inputLine );
+                System.out.println("Left in deck: " + (game.getDeck1().size() + game.getDeck2().size()));
             }
             socket.close();
         }
@@ -112,6 +140,20 @@ public class SpeedServerThread extends Thread
             e.printStackTrace();
         }
 
+    }
+    
+    public ArrayList<Card> getHand(int id){
+        return id == 1 ? game.getHand1() : game.getHand2();
+    }
+    
+    public Stack<Card> getDeck(int id){
+        return id == 1 ? game.getDeck1() : game.getDeck2();
+    }
+    
+    public void gameOverAction() {
+        out.println("YOUWIN");
+        otherPlayer.out.println("YOULOSE");
+        System.out.println("Game over! " + name + " wins! " + otherPlayer.getPlayerName() + " loses!");
     }
     
     public boolean remove(int id, Card c) {

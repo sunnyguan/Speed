@@ -1,3 +1,4 @@
+
 /*
  * Comment here if there's any changes you want:
  * 
@@ -8,7 +9,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+import java.util.Stack;
+
+import javax.swing.ImageIcon;
 
 
 public class Speed
@@ -16,29 +22,26 @@ public class Speed
 
     private ArrayList<Card> deck;
 
-    private ArrayList<Card> centralPile1 = new ArrayList<Card>( 52 ),
-                    centralPile2 = new ArrayList<Card>( 52 );
+    private ArrayList<Card> centralPile1 = new ArrayList<Card>( 52 ), centralPile2 = new ArrayList<Card>( 52 );
 
-    private Stack<Card> sideDeck1 = new Stack<Card>(),
-                    sideDeck2 = new Stack<Card>();
-    
+    private Stack<Card> sideDeck1 = new Stack<Card>(), sideDeck2 = new Stack<Card>();
+
     private ArrayList<Card> hand1, hand2;
 
     private Stack<Card> deck1, deck2;
-    
-    // private Player player1, player2;
 
-    private void initDeck() {
+    private void initDeck()
+    {
         deck = new ArrayList<Card>();
-        for(int i = 1; i <= 13; i++) {
-            deck.add( new Card(i, "H") );
-            deck.add( new Card(i, "C") );
-            deck.add( new Card(i, "D") );
-            deck.add( new Card(i, "S") );
+        for ( int i = 1; i <= 13; i++ )
+        {
+            deck.add( new Card( i, "H" ) );
+            deck.add( new Card( i, "C" ) );
+            deck.add( new Card( i, "D" ) );
+            deck.add( new Card( i, "S" ) );
         }
     }
-    
-    // TODO: check for errors. error prone!
+
     public Speed()
     {
         initDeck();
@@ -53,9 +56,9 @@ public class Speed
             // TODO: see if its more efficient to declare variable outside loop
             // only if visibility implemented
             Card c1 = deck.get( 4 * i );
-            //c1.setVisible1( true );
+            // c1.setVisible1( true );
             Card c2 = deck.get( 4 * i + 1 );
-            //c2.setVisible2( true );
+            // c2.setVisible2( true );
 
             hand1.add( c1 );
             hand2.add( c2 );
@@ -66,23 +69,20 @@ public class Speed
 
         for ( int i = 0; i < 15; i++ )
         {
-            deck1.push( deck.get( 2 * i + 20) );
-            deck2.push( deck.get( 2 * i + 21) );
+            deck1.push( deck.get( 2 * i + 20 ) );
+            deck2.push( deck.get( 2 * i + 21 ) );
         }
-        // player1 = p1;
-        // player2 = p2;
 
         centralPile1.add( deck.get( 50 ) );
         centralPile2.add( deck.get( 51 ) );
         // only if visibility used
         /*
-        centralPile1.get( centralPile1.size() - 1 ).setVisible1( true );
-        centralPile1.get( centralPile1.size() - 1 ).setVisible2( true );
-        centralPile2.get( centralPile2.size() - 1 ).setVisible1( true );
-        centralPile2.get( centralPile2.size() - 1 ).setVisible2( true );
-        */
+         * centralPile1.get( centralPile1.size() - 1 ).setVisible1( true );
+         * centralPile1.get( centralPile1.size() - 1 ).setVisible2( true );
+         * centralPile2.get( centralPile2.size() - 1 ).setVisible1( true );
+         * centralPile2.get( centralPile2.size() - 1 ).setVisible2( true );
+         */
     }
-
 
     /**
      * Tries to set the card on the given pile. Returns true if the action is
@@ -103,11 +103,8 @@ public class Speed
         {
             cPile = centralPile1;
         }
-        // TODO: finish
-        // if its one away or if its a king (13) and an ace (1)
         Card c1 = cPile.get( cPile.size() - 1 );
-        if ( Math.abs( c1.getValue() - c.getValue() ) == 1
-            || Math.abs( c1.getValue() - c.getValue() ) == 12 )
+        if ( Math.abs( c1.getValue() - c.getValue() ) == 1 || Math.abs( c1.getValue() - c.getValue() ) == 12 )
         {
             cPile.add( c );
             return true;
@@ -116,37 +113,23 @@ public class Speed
         return false;
     }
 
+    // TODO: add stuff for the window pop up
 
-    /*public boolean draw( ArrayList<Card> deck, ArrayList<Card> hand )
-    {
-        return false;
-    }
-
-
-    // May change to actual player
-    public void stuck( int player )
-    {
-
-    }*/
-
-    //TODO: add stuff for the window pop up
-    
     public int stuckCount = 0;
-    
-    public void removeCard(int id, String card) {
-        Card c = new Card(card);
-        if(id == 1) {
+
+    public void removeCard( int id, String card )
+    {
+        Card c = new Card( card );
+        if ( id == 1 )
+        {
             hand1.remove( c );
-        } else if (id == 2) {
+        }
+        else if ( id == 2 )
+        {
             hand2.remove( c );
         }
     }
-    
-    public void refill(int id)
-    {
-        
-    }
-    
+
     public Stack<Card> getDeck1()
     {
         return deck1;
@@ -167,20 +150,30 @@ public class Speed
         this.deck2 = deck2;
     }
 
+    public void addStuck()
+    {
+        stuckCount++;
+    }
+
+    public int agreeCount = 0; // counts how many players agree to flipping the
+                               // side deck ONCE
+                               // stuckCount = 2
+
+    public void addAgree()
+    {
+        agreeCount++;
+    }
+
     public boolean flipSideDeck()
     {
-        if(!(stuckCount == 2))
-        {
-            return false;
-        }
-        if(!sideDeck1.isEmpty())
+        if ( !sideDeck1.isEmpty() )
         {
             centralPile1.add( sideDeck1.pop() );
             centralPile2.add( sideDeck2.pop() );
         }
         else
         {
-            //May need it to be more efficient
+            // May need it to be more efficient
             Collections.shuffle( centralPile1 );
             Collections.shuffle( centralPile2 );
             sideDeck1.addAll( centralPile1 );
@@ -188,41 +181,38 @@ public class Speed
             centralPile1.add( sideDeck1.pop() );
             centralPile2.add( sideDeck2.pop() );
         }
+        agreeCount = 0;
+        stuckCount = 0;
         return true;
     }
-    
-    public Card getCentralPile1Card() {
+
+    public Card getCentralPile1Card()
+    {
         return centralPile1.get( centralPile1.size() - 1 );
     }
-    
-    public Card getCentralPile2Card() {
+
+    public Card getCentralPile2Card()
+    {
         return centralPile2.get( centralPile2.size() - 1 );
     }
 
-    //TODO: change if necessary
+    // TODO: change if necessary
     public boolean finish( Player p )
     {
         return p.isDone();
     }
-    
-    public static void main(String[] args) {
+
+    public static void main( String[] args )
+    {
         Speed s = new Speed();
         s.startServer();
     }
-    
+
     public static final int PORT = 4441;
 
-    // localhost switch
-    public static final boolean localhost = false;
-    
     public void startServer()
     {
-        String ip;
-        if(localhost) {
-            ip = "localhost";
-        } else {
-            ip = getIP();
-        }
+        String ip = getIP();
         if ( ip.equals( "ERR" ) )
         {
             System.out.println( "Could not get IP from command line. " );
@@ -238,13 +228,14 @@ public class Speed
         {
             SpeedServerThread mst = new SpeedServerThread( serverSocket.accept(), this, 1 );
             mst.start();
-            System.out.println("Connected!");
+            System.out.println( "Connected! Waiting for name..." );
 
             SpeedServerThread mst2 = new SpeedServerThread( serverSocket.accept(), this, 2 );
             mst2.start();
-            
-            mst.otherPlayer = mst2;
-            mst2.otherPlayer = mst;
+            System.out.println( "Connected! Waiting for name..." );
+
+            mst.setOtherPlayer( mst2 );
+            mst2.setOtherPlayer( mst );
         }
         catch ( IOException e )
         {
@@ -282,72 +273,61 @@ public class Speed
         return centralPile1;
     }
 
-
     public void setCentralPile1( ArrayList<Card> centralPile1 )
     {
         this.centralPile1 = centralPile1;
     }
-
 
     public ArrayList<Card> getCentralPile2()
     {
         return centralPile2;
     }
 
-
     public void setCentralPile2( ArrayList<Card> centralPile2 )
     {
         this.centralPile2 = centralPile2;
     }
-
 
     public Stack<Card> getSideDeck1()
     {
         return sideDeck1;
     }
 
-
     public void setSideDeck1( Stack<Card> sideDeck1 )
     {
         this.sideDeck1 = sideDeck1;
     }
-
 
     public Stack<Card> getSideDeck2()
     {
         return sideDeck2;
     }
 
-
     public void setSideDeck2( Stack<Card> sideDeck2 )
     {
         this.sideDeck2 = sideDeck2;
     }
-
 
     public ArrayList<Card> getHand1()
     {
         return hand1;
     }
 
-
     public void setHand1( ArrayList<Card> hand1 )
     {
         this.hand1 = hand1;
     }
-
 
     public ArrayList<Card> getHand2()
     {
         return hand2;
     }
 
-
     public void setHand2( ArrayList<Card> hand2 )
     {
         this.hand2 = hand2;
     }
-    
+
     public static String getIP()
     {
         ProcessBuilder processBuilder = new ProcessBuilder();

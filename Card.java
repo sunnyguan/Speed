@@ -1,3 +1,7 @@
+import java.net.URL;
+
+import javax.swing.ImageIcon;
+
 /*
  * Comment here if there's any changes you want:
  * 
@@ -10,13 +14,16 @@ public class Card
     private int value;
 
     private String suite;
+    
+    private ImageIcon img;
+    
     /*
     private boolean visible1 = false;
     
     private boolean visible2 = false;
     */
 
-    public Card( int val, String suite )
+    public Card( int val, String suite)
     {
         value = val;
         this.suite = suite;
@@ -64,6 +71,15 @@ public class Card
     public String toString()
     {
         return value + "," + suite;
+    }
+    
+    public ImageIcon getImage()
+    {
+        if(img == null) {
+            String imageURI = "/images/" + value + suite + ".png";
+            img = new ImageIcon(Card.class.getResource(imageURI));
+        }
+        return img;
     }
 
 

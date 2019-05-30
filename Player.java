@@ -13,10 +13,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Stack;
+
+import javax.swing.ImageIcon;
 
 
-// import java.net.*;
 public class Player
 {
     private ArrayList<Card> hand;
@@ -24,9 +24,30 @@ public class Player
     private Card pile1, pile2;
 
     private boolean stuck = false;
-    // private Socket s;
+
+    private ImageIcon imgs[] = new ImageIcon[52];
     
-    private boolean autoRefill;
+    public Card getPile1()
+    {
+        return pile1;
+    }
+
+    public Card getPile2()
+    {
+        return pile2;
+    }
+
+    public ArrayList<Card> getHand()
+    {
+        return hand;
+    }
+
+    public void setHand( ArrayList<Card> hand )
+    {
+        this.hand = hand;
+    }
+
+    private String ip;
     
     /**
      * @param hand
@@ -35,48 +56,60 @@ public class Player
      * @param deck
      *            The player's initial drawpile. Can have 15 cards at most.
      */
-    public Player( boolean mode ) // , Socket s)
+    public Player( String ip ) // , Socket s)
     {
-        this.autoRefill = mode;
+        // initImgs();
         hand = new ArrayList<Card>();
-        pile1 = new Card(0, "NULL");
-        pile2 = new Card(0, "NULL");
-        
+        pile1 = new Card( 0, "NULL" );
+        pile2 = new Card( 0, "NULL" );
     }
-
-    /*public void addDeck( Stack<Card> deck )
+    
+    /*private void initImgs()
     {
-        this.deck = deck;
+        for ( int i = 1; i <= 13; i++ )
+        {
+            String h = "/images/" + i + "H.png";
+            String c = "/images/" + i + "C.png";
+            String d = "/images/" + i + "D.png";
+            String s = "/images/" + i + "S.png";
+            imgs[( i - 1 ) * 4] = new ImageIcon( Speed.class.getResource( h ) );
+            imgs[( i - 1 ) * 4 + 1] = new ImageIcon( Speed.class.getResource( c ) );
+            imgs[( i - 1 ) * 4 + 2] = new ImageIcon( Speed.class.getResource( d ) );
+            imgs[( i - 1 ) * 4 + 3] = new ImageIcon( Speed.class.getResource( s ) );
+
+        }
     }*/
 
     public void addHand( ArrayList<Card> hand )
     {
         this.hand = hand;
     }
-
-    // TODO: check for off by one errors, may need to return something if empty
     
-
-    // TODO: may need parameter
     public void stuck()
     {
-        stuck = true;
-    }
-    
-    public void moveToPile (Card c, int pileNum) {
-        if(hand.contains(c)) {
-            out.println("MOVETOPILE|" + c.toString() + "|" + pileNum);
+        if(!stuck) {
+            stuck = true;
+            out.println("STUCK");
         }
     }
 
+    public void moveToPile( Card c, int pileNum )
+    {
+        if ( hand.contains( c ) )
+        {
+            out.println( "MOVETOPILE|" + c.toString() + "|" + pileNum );
+        }
+    }
+
+    int refillIndex = 0;
+    
     public boolean remove( Card c )
     {
         if ( hand.contains( c ) )
         {
+            refillIndex = hand.indexOf( c );
             hand.remove( c );
-            if(autoRefill) {
-                refill();
-            }
+            refill();
             return true;
         }
         return false;
@@ -92,11 +125,11 @@ public class Player
         // TODO check with server
         return hand.isEmpty(); // && deck.isEmpty();
     }
-    
+
     // networking
-    
+
     String name = "";
-    
+
     String oppName = "";
 
     Socket kkSocket;
@@ -125,18 +158,33 @@ public class Player
         serverRunner.start();
     }
 
-    public void init() throws UnknownHostException, IOException {
-        initialize( "192.168.137.1", 4441 );
-    }
-    
-    public static void main( String[] args ) throws IOException
+    public void init(String ip) 
     {
-        Player p = new Player(true);
-        p.init();
+        try
+        {
+            initialize( ip, 4441 );
+        }
+        catch ( UnknownHostException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch ( IOException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
-    
-    public void refill() {
-        out.println("REFILL");
+
+    /*public static void main( String[] args ) throws IOException
+    {
+        Player p = new Player();
+        p.init();
+    }*/
+
+    public void refill()
+    {
+        out.println( "REFILL" );
     }
 
     class UserInputRunner implements Runnable
@@ -148,10 +196,10 @@ public class Player
             // USED AS TEMPORARY REPLACEMENT FOR GUI INPUTS
             // SHOULD BE REPLACED BY INPUT LISTENERS WITH GUI !!
             Scanner s = new Scanner( System.in );
-            String fromUser = s.nextLine();
-            name = fromUser;
-            out.println( "NAME|" + fromUser );
-            
+            String fromUser;// = s.nextLine();
+            // name = fromUser;
+            // out.println( "NAME|" + fromUser );
+
             while ( ( fromUser = s.nextLine() ) != null )
             {
                 out.println( fromUser );
@@ -159,6 +207,12 @@ public class Player
             s.close();
         }
     }
+    
+    public void setName(String name) {
+        this.name = name;
+        out.println("NAME|" + name);
+    }
+
     class ServerOutputRunner implements Runnable
     {
         // receive message from other player
@@ -170,29 +224,47 @@ public class Player
             {
                 while ( ( fromServer = in.readLine() ) != null )
                 {
-                    System.out.println("Server: " + fromServer);
-                    if(fromServer.startsWith( "HANDADD" )) {
-                        Card c = new Card(fromServer.split( "\\|" )[1]);
-                        hand.add( c );
-                        System.out.println("Updated hand: " + hand);
-                    } else if (fromServer.startsWith( "SETPILE" )) {
-                        Card c = new Card(fromServer.split( "\\|" )[1]);
-                        if(fromServer.split( "\\|" )[2].equals( "1" )) {
-                            pile1 = c;
-                            System.out.println("Pile 1: " + pile1.toString() + "; Pile 2: " + pile2.toString());
-                        } else {
-                            pile2 = c;
-                            System.out.println("Pile 1: " + pile1.toString() + "; Pile 2: " + pile2.toString());
-                        }
-                    } else if(fromServer.startsWith( "HANDREMOVE" )) {
-                        Card c = new Card(fromServer.split( "\\|" )[1]);
-                        remove( c );
-                        System.out.println("Updated hand: " + hand);
-                    } else if(fromServer.startsWith( "PLCHDR" )) {
-                        
-                        
+                    System.out.println( "Server: " + fromServer );
+                    if ( fromServer.startsWith( "HANDADD" ) )
+                    {
+                        Card c = new Card( fromServer.split( "\\|" )[1] );
+                        hand.add( refillIndex, c );
+                        System.out.println( "Updated hand: " + hand );
                     }
-                    // sp.processInput( fromServer );
+                    else if ( fromServer.startsWith( "SETPILE" ) )
+                    {
+                        if(stuck) {
+                            stuck = false;
+                            System.out.println("UNSTUCK");
+                        }
+                        Card c = new Card( fromServer.split( "\\|" )[1] );
+                        if ( fromServer.split( "\\|" )[2].equals( "1" ) )
+                        {
+                            pile1 = c;
+                            System.out.println( "Pile 1: " + pile1.toString() + "; Pile 2: " + pile2.toString() );
+                        }
+                        else
+                        {
+                            pile2 = c;
+                            System.out.println( "Pile 1: " + pile1.toString() + "; Pile 2: " + pile2.toString() );
+                        }
+                    }
+                    else if ( fromServer.startsWith( "HANDREMOVE" ) )
+                    {
+                        Card c = new Card( fromServer.split( "\\|" )[1] );
+                        remove( c );
+                        System.out.println( "Updated hand: " + hand );
+                    }
+                    else if ( fromServer.startsWith( "YOUWIN" ) )
+                    {
+                        // winning message on GUI
+                        break;
+                    }
+                    else if ( fromServer.startsWith( "YOULOSE" ) )
+                    {
+                        // losing message on GUI
+                        break;
+                    }
                 }
             }
             catch ( IOException e )
@@ -201,4 +273,6 @@ public class Player
             }
         }
     }
+    
+    public int stuckCount = 0;
 }
