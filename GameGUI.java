@@ -33,8 +33,7 @@ public class GameGUI extends JFrame
     }
     
     public void init() {
-        player = new Player("10.18.87.43");
-        player.init( "10.18.87.43" );
+        player = new Player();
         JFrame homePage = new JFrame("Home Page");
         homePage.setSize( 600, 550 );
         homePage.getContentPane().setBackground( new Color(130, 20, 0) );
@@ -191,9 +190,14 @@ public class GameGUI extends JFrame
         {
             public void mouseClicked (MouseEvent e )
             {
-                setIPAddress( IPText.getText());
+                String ip = IPText.getText();
+                if(IPText.getText().charAt( 0 ) != '1') {
+                    ip = "192.168.137.1";
+                }
+                player.init( ip );
                 // setName
                 player.setName(nameText.getText());
+                System.out.println(IPText.getText());
                 ipEntered = true;
                 cardsInit(pane);
                 setUp.setVisible( false );
@@ -301,7 +305,7 @@ public class GameGUI extends JFrame
             cp.setOpaque( true );
             
             JLabel jp = new JLabel("");
-            jp.setBounds(otherStartx + playerdx * i, otherStarty, 60, 92);
+            jp.setBounds(otherStartx + playerdx * i, otherStarty, 87, 92);
             jp.setIcon( back );
             theirCards.add( jp );
             
@@ -470,7 +474,6 @@ public class GameGUI extends JFrame
     public void setIPAddress(String s)
     {
         IPAddress = s;
-        System.out.println(IPAddress);
     }
     
     // could be buggy

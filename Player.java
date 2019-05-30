@@ -59,7 +59,7 @@ public class Player
      * @param deck
      *            The player's initial drawpile. Can have 15 cards at most.
      */
-    public Player( String ip ) // , Socket s)
+    public Player() // , Socket s)
     {
         // initImgs();
         hand = new ArrayList<Card>();
