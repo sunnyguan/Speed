@@ -17,6 +17,8 @@ public class Card
     
     private ImageIcon img;
     
+    public boolean deact = false;
+    
     /*
     private boolean visible1 = false;
     

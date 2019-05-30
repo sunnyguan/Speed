@@ -33,8 +33,8 @@ public class GameGUI extends JFrame
     }
     
     public void init() {
-        player = new Player("192.168.137.1");
-        player.init( "192.168.137.1" );
+        player = new Player("10.18.87.43");
+        player.init( "10.18.87.43" );
         JFrame homePage = new JFrame("Home Page");
         homePage.setSize( 600, 550 );
         homePage.getContentPane().setBackground( new Color(130, 20, 0) );
@@ -339,30 +339,40 @@ public class GameGUI extends JFrame
         Timer timer = new Timer(40, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for(int i = 0; i < 5; i++) {
-                    if(player.getHand().size() <= i) {
-                        myCards.get( i ).deact = true;
-                        continue;
+            	if(player.state == 0) {
+            		win();
+            		((Timer)e.getSource()).stop();
+            	} else if (player.state == 2) {
+            		lose();
+            		((Timer)e.getSource()).stop();
+            	} else {
+            		System.out.println("Painting");
+            		for(int i = 0; i < 5; i++) {
+                        if(player.getHand().get(i).deact) {
+                            myCards.get( i ).deact = true;
+                            // System.out.println(i + " deactivated.");
+                            continue;
+                        }
+                        Card c = player.getHand().get( i );
+                        myCards.get( i ).card = c;
+                        myCards.get( i ).icon = c.getImage();
+                        // check collision
+                        if(myCards.get( i ).collide1) {
+                            player.out.println("MOVETOPILE|" + myCards.get( i ).card.toString() + "|1");
+                            myCards.get( i ).collide1 = false;
+                        } else if(myCards.get( i ).collide2) {
+                            player.out.println("MOVETOPILE|" + myCards.get( i ).card.toString() + "|2");
+                            myCards.get( i ).collide2 = false;
+                        }
+                        if(!player.isStuck()) {
+                            stuckButton.setSelected( false );
+                        }
                     }
-                    Card c = player.getHand().get( i );
-                    myCards.get( i ).card = c;
-                    myCards.get( i ).icon = c.getImage();
-                    // check collision
-                    if(myCards.get( i ).collide1) {
-                        player.out.println("MOVETOPILE|" + myCards.get( i ).card.toString() + "|1");
-                        myCards.get( i ).collide1 = false;
-                    } else if(myCards.get( i ).collide2) {
-                        player.out.println("MOVETOPILE|" + myCards.get( i ).card.toString() + "|2");
-                        myCards.get( i ).collide2 = false;
-                    }
-                    if(!player.isStuck()) {
-                        stuckButton.setSelected( false );
-                    }
-                }
-                central1.setIcon( player.getPile1().getImage());
-                central2.setIcon( player.getPile2().getImage());
-                
-                pane.repaint();
+                    central1.setIcon( player.getPile1().getImage());
+                    central2.setIcon( player.getPile2().getImage());
+                    
+                    pane.repaint();
+            	}
             }
         });
         

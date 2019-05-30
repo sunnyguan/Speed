@@ -63,8 +63,10 @@ public class Speed
             hand1.add( c1 );
             hand2.add( c2 );
             // TODO: will change if we care about order
+            
             sideDeck1.push( deck.get( 4 * i + 2 ) );
             sideDeck2.push( deck.get( 4 * i + 3 ) );
+            
         }
 
         for ( int i = 0; i < 15; i++ )

@@ -108,7 +108,7 @@ public class Player
         if ( hand.contains( c ) )
         {
             refillIndex = hand.indexOf( c );
-            hand.remove( c );
+            // hand.remove( c );
             refill();
             return true;
         }
@@ -228,8 +228,14 @@ public class Player
                     if ( fromServer.startsWith( "HANDADD" ) )
                     {
                         Card c = new Card( fromServer.split( "\\|" )[1] );
+                        if(hand.size() == 5) {
+                        	hand.remove(refillIndex);
+                        }
                         hand.add( refillIndex, c );
                         System.out.println( "Updated hand: " + hand );
+                    }
+                    else if (fromServer.startsWith("DEACTCARD")) {
+                    	hand.get(refillIndex).deact = true;
                     }
                     else if ( fromServer.startsWith( "SETPILE" ) )
                     {
@@ -257,12 +263,12 @@ public class Player
                     }
                     else if ( fromServer.startsWith( "YOUWIN" ) )
                     {
-                        // winning message on GUI
+                        state = 2;
                         break;
                     }
                     else if ( fromServer.startsWith( "YOULOSE" ) )
                     {
-                        // losing message on GUI
+                        state = 0;
                         break;
                     }
                 }
@@ -273,6 +279,8 @@ public class Player
             }
         }
     }
+    
+    public int state = 1; // 0 = lose, 1 = running, 2 = win
     
     public int stuckCount = 0;
 }

@@ -123,6 +123,9 @@ public class SpeedServerThread extends Thread
                             Card c = deck.pop();
                             hand.add( c );
                             out.println("HANDADD|" + c.toString());
+                        } else {
+                        	out.println("DEACTCARD");
+                        	break;
                         }
                     }
                 } else if (inputLine.startsWith( "FGAMEOVER" )) { // TODO testing only!
