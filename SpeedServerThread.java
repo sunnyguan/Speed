@@ -111,6 +111,13 @@ public class SpeedServerThread extends Thread
                         String msg = "SETPILE|" + inputLine.split( "\\|" )[1] + "|" + inputLine.split( "\\|" )[2];
                         out.println(msg);
                         otherPlayer.out.println( msg );
+                        
+                        ArrayList<Card> hand = getHand(id);
+                        Stack<Card> deck = getDeck(id);
+                        if(hand.isEmpty() && deck.isEmpty()) {
+                            gameOverAction();
+                            break;
+                        }
                     }
                 } else if (inputLine.startsWith( "REFILL" )) {
                     ArrayList<Card> hand = getHand(id);
@@ -125,6 +132,7 @@ public class SpeedServerThread extends Thread
                             out.println("HANDADD|" + c.toString());
                         } else {
                         	out.println("DEACTCARD");
+                        	otherPlayer.out.println("DECKEMPTY2");
                         	break;
                         }
                     }

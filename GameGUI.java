@@ -286,6 +286,8 @@ public class GameGUI extends JFrame
     public static int[] hand2X = {myStartx, myStartx + playerdx, 
         myStartx + 2 * playerdx, myStartx + 3 * playerdx, myStartx + 4 * playerdx};
     
+    public JLabel deck1;
+    public JLabel deck2;
     
     private void cardsInit(JLayeredPane pane) {
         myCards = new ArrayList<CardPanel>();
@@ -311,8 +313,8 @@ public class GameGUI extends JFrame
         JLabel central2 = new JLabel("");
         JLabel side1 = new JLabel("");
         JLabel side2 = new JLabel("");
-        JLabel deck1 = new JLabel("");
-        JLabel deck2 = new JLabel("");
+        deck1 = new JLabel("");
+        deck2 = new JLabel("");
         
         side1.setBounds(centralX, centralY, 65, 92);
         central1.setBounds(centralX + centraldx, centralY, 60, 92);
@@ -339,14 +341,21 @@ public class GameGUI extends JFrame
         Timer timer = new Timer(40, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(player.state == 0) {
+            	if(player.state == 2) {
             		win();
             		((Timer)e.getSource()).stop();
-            	} else if (player.state == 2) {
+            	} else if (player.state == 0) {
             		lose();
             		((Timer)e.getSource()).stop();
             	} else {
-            		System.out.println("Painting");
+            		if(player.deck1Empty) {
+            			game.remove(deck1);
+            			game.revalidate();
+            		}
+            		if(player.deck2Empty) {
+            			game.remove(deck2);
+            			game.revalidate();
+            		}
             		for(int i = 0; i < 5; i++) {
                         if(player.getHand().get(i).deact) {
                             myCards.get( i ).deact = true;
@@ -538,10 +547,14 @@ public class GameGUI extends JFrame
         winPage.getContentPane().setLayout(null);
         winPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
+        
         JLabel winLabel = new JLabel("");
         winLabel.setBounds(300-434/2, 100, 434, 126);
         winLabel.setIcon( new ImageIcon (GameGUI.class.getResource("/images/Win.png")) );
         winPage.getContentPane().add(winLabel);
+        
+        winPage.setVisible(true);
+        game.setVisible(true);
     }
     
     public void lose()
@@ -556,5 +569,8 @@ public class GameGUI extends JFrame
         loseLabel.setBounds(300-520/2, 100, 520, 126);
         loseLabel.setIcon( new ImageIcon (GameGUI.class.getResource("/images/Lost.png")) );
         losePage.getContentPane().add(loseLabel);
+        
+        losePage.setVisible(true);
+        game.setVisible(true);
     }
 }

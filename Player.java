@@ -27,6 +27,9 @@ public class Player
 
     private ImageIcon imgs[] = new ImageIcon[52];
     
+    public boolean deck1Empty = false;
+    public boolean deck2Empty = false;
+    
     public Card getPile1()
     {
         return pile1;
@@ -236,6 +239,10 @@ public class Player
                     }
                     else if (fromServer.startsWith("DEACTCARD")) {
                     	hand.get(refillIndex).deact = true;
+                    	deck1Empty = true;
+                    }
+                    else if (fromServer.startsWith("DECKEMPTY2")) {
+                    	deck2Empty = true;
                     }
                     else if ( fromServer.startsWith( "SETPILE" ) )
                     {
