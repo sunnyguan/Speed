@@ -339,7 +339,11 @@ public class GameGUI extends JFrame
         Timer timer = new Timer(40, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for(int i = 0; i < player.getHand().size(); i++) {
+                for(int i = 0; i < 5; i++) {
+                    if(player.getHand().size() <= i) {
+                        myCards.get( i ).deact = true;
+                        continue;
+                    }
                     Card c = player.getHand().get( i );
                     myCards.get( i ).card = c;
                     myCards.get( i ).icon = c.getImage();

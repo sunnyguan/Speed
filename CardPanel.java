@@ -24,6 +24,8 @@ public class CardPanel extends JPanel {
     public boolean collide1 = false;
     public boolean collide2 = false;
     
+    public boolean deact = false;
+    
     public ImageIcon icon;
     public Card card;
     private boolean released;
@@ -35,7 +37,6 @@ public class CardPanel extends JPanel {
         int y = GameGUI.myStarty;
         textPt = new Point(x,y);
         oriPt = new Point(x,y);
-        this.icon = icon;
         this.setFont(new Font("Serif", Font.ITALIC + Font.BOLD, 32));
         this.addMouseListener(new MouseAdapter() {
 
@@ -55,7 +56,7 @@ public class CardPanel extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if(!released) {
+                if(!released && !deact) {
                     int dx = e.getXOnScreen() - mousePt.x;
                     int dy = e.getYOnScreen() - mousePt.y;
                     setBounds(textPt.x + dx, textPt.y + dy, 60, 92);
@@ -101,7 +102,9 @@ public class CardPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        icon.paintIcon( this, g, 0, 0 );
+        if(!deact) {
+            icon.paintIcon( this, g, 0, 0 );
+        }
     }
 
     /*public static void main(String[] args) {

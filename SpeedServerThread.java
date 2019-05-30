@@ -131,7 +131,7 @@ public class SpeedServerThread extends Thread
                 }
                 
                 System.out.println( inputLine );
-                System.out.println("Left in deck: " + (game.getDeck1().size() + game.getDeck2().size()));
+                System.out.println("Left in deck: " + game.getDeck1().size() + ", " + game.getDeck2().size());
             }
             socket.close();
         }
