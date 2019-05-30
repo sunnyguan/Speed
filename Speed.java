@@ -1,10 +1,4 @@
 
-/*
- * Comment here if there's any changes you want:
- * 
- * 
- */
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 import java.util.Stack;
-
-import javax.swing.ImageIcon;
 
 
 public class Speed
@@ -53,20 +45,15 @@ public class Speed
 
         for ( int i = 0; i < 5; i++ )
         {
-            // TODO: see if its more efficient to declare variable outside loop
-            // only if visibility implemented
             Card c1 = deck.get( 4 * i );
-            // c1.setVisible1( true );
             Card c2 = deck.get( 4 * i + 1 );
-            // c2.setVisible2( true );
 
             hand1.add( c1 );
             hand2.add( c2 );
-            // TODO: will change if we care about order
-            
+
             sideDeck1.push( deck.get( 4 * i + 2 ) );
             sideDeck2.push( deck.get( 4 * i + 3 ) );
-            
+
         }
 
         for ( int i = 0; i < 15; i++ )
@@ -77,13 +64,6 @@ public class Speed
 
         centralPile1.add( deck.get( 50 ) );
         centralPile2.add( deck.get( 51 ) );
-        // only if visibility used
-        /*
-         * centralPile1.get( centralPile1.size() - 1 ).setVisible1( true );
-         * centralPile1.get( centralPile1.size() - 1 ).setVisible2( true );
-         * centralPile2.get( centralPile2.size() - 1 ).setVisible1( true );
-         * centralPile2.get( centralPile2.size() - 1 ).setVisible2( true );
-         */
     }
 
     /**
@@ -114,8 +94,6 @@ public class Speed
 
         return false;
     }
-
-    // TODO: add stuff for the window pop up
 
     public int stuckCount = 0;
 
@@ -157,15 +135,6 @@ public class Speed
         stuckCount++;
     }
 
-    public int agreeCount = 0; // counts how many players agree to flipping the
-                               // side deck ONCE
-                               // stuckCount = 2
-
-    public void addAgree()
-    {
-        agreeCount++;
-    }
-
     public boolean flipSideDeck()
     {
         if ( !sideDeck1.isEmpty() )
@@ -183,7 +152,6 @@ public class Speed
             centralPile1.add( sideDeck1.pop() );
             centralPile2.add( sideDeck2.pop() );
         }
-        agreeCount = 0;
         stuckCount = 0;
         return true;
     }
@@ -198,12 +166,6 @@ public class Speed
         return centralPile2.get( centralPile2.size() - 1 );
     }
 
-    // TODO: change if necessary
-    public boolean finish( Player p )
-    {
-        return p.isDone();
-    }
-
     public static void main( String[] args )
     {
         Speed s = new Speed();
@@ -211,6 +173,8 @@ public class Speed
     }
 
     public static final int PORT = 4441;
+
+    private static final boolean TESTING = false;
 
     public void startServer()
     {
@@ -222,9 +186,12 @@ public class Speed
         }
         System.out.println( "Listening on IP: " + ip + ":" + PORT );
 
-        ServerInputRunner sir = new ServerInputRunner();
-        Thread t = new Thread( sir );
-        t.start();
+        if ( TESTING )
+        {
+            ServerInputRunner sir = new ServerInputRunner();
+            Thread t = new Thread( sir );
+            t.start();
+        }
 
         try (ServerSocket serverSocket = new ServerSocket( PORT ))
         {
