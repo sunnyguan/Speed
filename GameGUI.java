@@ -237,7 +237,7 @@ public class GameGUI extends JFrame
         ArrayList<JLabel> theirCards = new ArrayList<JLabel>();
         ArrayList<Card> h1 = player.getHand();
         ImageIcon back = new ImageIcon( GameGUI.class.getResource( "/images/back.png" ) );
-        for ( int i = 0; i < 5; i++ )
+        for ( int i = 0; i < h1.size(); i++ )
         {
             CardPanel cp = new CardPanel( h1.get( i ), i );
             cp.setBounds( myStartx + playerdx * i, myStarty, 60, 92 );
