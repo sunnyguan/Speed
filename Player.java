@@ -132,6 +132,10 @@ public class Player
         String hostName = ip;
         int portNumber = port;
 
+        for(int i = 0; i < 5; i++) {
+            oppoHand[i] = true;
+        }
+        
         kkSocket = new Socket( hostName, portNumber );
         out = new PrintWriter( kkSocket.getOutputStream(), true );
         in = new BufferedReader( new InputStreamReader( kkSocket.getInputStream() ) );
@@ -170,7 +174,7 @@ public class Player
 
     public void refill()
     {
-        out.println( "REFILL" );
+        out.println( "REFILL|" + refillIndex );
     }
 
     class UserInputRunner implements Runnable
@@ -194,6 +198,15 @@ public class Player
     {
         this.name = name;
         out.println( "NAME|" + name );
+    }
+    
+    private boolean[] oppoHand;
+
+    
+    
+    public boolean[] getOppoHand()
+    {
+        return oppoHand;
     }
 
     class ServerOutputRunner implements Runnable
@@ -226,6 +239,8 @@ public class Player
                     else if ( fromServer.startsWith( "DECKEMPTY2" ) )
                     {
                         deck2Empty = true;
+                        int deactIndex = Integer.parseInt( fromServer.split( "|" )[1] );
+                        oppoHand[refillIndex] = false;
                     }
                     else if ( fromServer.startsWith( "SETPILE" ) )
                     {

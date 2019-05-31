@@ -230,11 +230,13 @@ public class GameGUI extends JFrame
     private CardPanel deck1;
 
     private CardPanel deck2;
+    
+    private ArrayList<CardPanel> theirCards;
 
     private void cardsInit( JLayeredPane pane )
     {
         myCards = new ArrayList<CardPanel>();
-        ArrayList<CardPanel> theirCards = new ArrayList<CardPanel>();
+        theirCards = new ArrayList<CardPanel>();
         
         while(player.getHand().size() != 5) {
             try
@@ -316,6 +318,12 @@ public class GameGUI extends JFrame
                             }
                             // System.out.println(i + " deactivated.");
                             continue;
+                        }
+                        if(!player.getOppoHand()[i]) {
+                            if(!theirCards.get( i ).isDeact()) {
+                                theirCards.get( i ).setDeact( true );
+                                pane.remove( theirCards.get( i ) );
+                            }
                         }
                         Card c = player.getHand().get( i );
                         myCards.get( i ).setCard( c );
