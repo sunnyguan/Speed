@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -62,7 +63,7 @@ public class GameGUI extends JFrame
         setUp.getContentPane().setLayout( null );
 
         JButton startGame = new JButton( "Let's Play!" );
-        startGame.setBounds( 200 - 45, 197, 90, 20 );
+        startGame.setBounds( 200 - 45, 197, 100, 20 );
         setUp.getContentPane().add( startGame );
 
         JLabel namelbl = new JLabel( "Name:" );
@@ -124,7 +125,7 @@ public class GameGUI extends JFrame
         stuckButton.setBackground( new Color( 0, 100, 0 ) );
         game.getLayeredPane().add( stuckButton );
 
-        JLabel lblStuck = new JLabel( "STUCK" );
+        lblStuck = new JLabel( "STUCK?" );
         lblStuck.setForeground( new Color( 255, 255, 255 ) );
         lblStuck.setBounds( 505, 148, 61, 16 );
         game.getLayeredPane().add( lblStuck );
@@ -205,10 +206,13 @@ public class GameGUI extends JFrame
             public void mouseClicked( MouseEvent e )
             {
                 player.stuck();
+                lblStuck.setText( "Waiting..." );
             }
         } );
 
     }
+    
+    private JLabel lblStuck;
     
     private JRadioButton stuckButton;
 
@@ -341,16 +345,26 @@ public class GameGUI extends JFrame
                         if ( myCards.get( i ).isCollide1() )
                         {
                             player.out.println( "MOVETOPILE|" + myCards.get( i ).getCard().toString() + "|1" );
+                            if(player.isStuck()) {
+                                player.stuck();
+                            }
                             myCards.get( i ).setCollide1( false );
                         }
                         else if ( myCards.get( i ).isCollide2() )
                         {
                             player.out.println( "MOVETOPILE|" + myCards.get( i ).getCard().toString() + "|2" );
+                            if(player.isStuck()) {
+                                player.stuck();
+                            }
                             myCards.get( i ).setCollide2( false );
                         }
                         if ( !player.isStuck() )
                         {
                             stuckButton.setSelected( false );
+                            lblStuck.setText("STUCK?");
+                        } else {
+                            stuckButton.setSelected( true );
+                            lblStuck.setText("Waiting...");
                         }
                     }
                     central1.setCard( player.getPile1() );

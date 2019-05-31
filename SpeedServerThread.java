@@ -88,13 +88,12 @@ public class SpeedServerThread extends Thread
                 if ( inputLine.equals( "STUCK" ) )
                 {
                     game.stuckCount++;
-                    if ( game.stuckCount > 2 )
-                        game.stuckCount %= 2;
+                    
                     if ( game.stuckCount == 2 )
                     {
                         game.flipSideDeck();
-                        String msg1 = "SETPILE|" + game.getCentralPile1Card().toString() + "|1";
-                        String msg2 = "SETPILE|" + game.getCentralPile2Card().toString() + "|2";
+                        String msg1 = "SETPILE|" + game.getCentralPile1Card().toString() + "|1|T";
+                        String msg2 = "SETPILE|" + game.getCentralPile2Card().toString() + "|2|T";
                         out.println( msg1 );
                         out.println( msg2 );
                         otherPlayer.out.println( msg1 );

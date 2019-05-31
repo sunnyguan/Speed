@@ -250,7 +250,7 @@ public class Player
                     }
                     else if ( fromServer.startsWith( "SETPILE" ) )
                     {
-                        if ( stuck )
+                        if ( stuck && fromServer.split( "\\|" ).length == 4)
                         {
                             stuck = false;
                             System.out.println( "UNSTUCK" );
