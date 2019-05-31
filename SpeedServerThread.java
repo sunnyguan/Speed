@@ -8,6 +8,16 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 
+/**
+ * Speed Server Thread to handle one client connection.
+ *
+ * @author Sunny Guan
+ * @version May 30, 2019
+ * @author Period: 5
+ * @author Assignment: Speed
+ *
+ * @author Sources: None
+ */
 public class SpeedServerThread extends Thread
 {
     private int id = -1;
@@ -20,6 +30,14 @@ public class SpeedServerThread extends Thread
 
     private String name;
 
+    /**
+     * @param socket
+     *            Client socket
+     * @param game
+     *            Game controller
+     * @param id
+     *            first or second player
+     */
     public SpeedServerThread( Socket socket, Speed game, int id )
     {
         super( "KKMultiServerThread" );
@@ -28,26 +46,53 @@ public class SpeedServerThread extends Thread
         this.game = game;
     }
 
+    /**
+     * Get player name
+     * 
+     * @return player name
+     */
     public String getPlayerName()
     {
         return name;
     }
 
+    /**
+     * Get instance of the opponent
+     * 
+     * @return the opponent
+     */
     public SpeedServerThread getOtherPlayer()
     {
         return otherPlayer;
     }
 
+    /**
+     * Set the other player
+     * 
+     * @param otherPlayer
+     *            the opponent
+     */
     public void setOtherPlayer( SpeedServerThread otherPlayer )
     {
         this.otherPlayer = otherPlayer;
     }
 
+    /**
+     * Get output stream to the other player's socket
+     * 
+     * @return
+     */
     public PrintWriter getOut()
     {
         return out;
     }
 
+    /**
+     * Set output stream to the opponent's socket
+     * 
+     * @param out
+     *            output Print Writer
+     */
     public void setOut( PrintWriter out )
     {
         this.out = out;
@@ -55,6 +100,9 @@ public class SpeedServerThread extends Thread
 
     private PrintWriter out;
 
+    @Override
+    // game logic
+    // handles input from clients and respond according to the protocol
     public void run()
     {
         try
@@ -82,13 +130,13 @@ public class SpeedServerThread extends Thread
             }
             out.println( "SETPILE|" + game.getCentralPile1().get( 0 ) + "|1" );
             out.println( "SETPILE|" + game.getCentralPile2().get( 0 ) + "|2" );
-            
+
             while ( ( inputLine = in.readLine() ) != null )
             {
                 if ( inputLine.equals( "STUCK" ) )
                 {
                     game.stuckCount++;
-                    
+
                     if ( game.stuckCount == 2 )
                     {
                         game.flipSideDeck();
@@ -179,16 +227,33 @@ public class SpeedServerThread extends Thread
 
     }
 
+    /**
+     * Helper method to get this client's hand
+     * 
+     * @param id
+     *            first or second player
+     * @return ArrayList of the player's hand
+     */
     public ArrayList<Card> getHand( int id )
     {
         return id == 1 ? game.getHand1() : game.getHand2();
     }
 
+    /**
+     * Helper method to get this client's deck
+     * 
+     * @param id
+     *            first or second player
+     * @return stack of the player's deck
+     */
     public Stack<Card> getDeck( int id )
     {
         return id == 1 ? game.getDeck1() : game.getDeck2();
     }
 
+    /**
+     * Game over output to console and output streams
+     */
     public void gameOverAction()
     {
         out.println( "YOUWIN" );
@@ -196,6 +261,15 @@ public class SpeedServerThread extends Thread
         System.out.println( "Game over! " + name + " wins! " + otherPlayer.getPlayerName() + " loses!" );
     }
 
+    /**
+     * Remove a card from hand
+     * 
+     * @param id
+     *            first or second player
+     * @param c
+     *            card to remove
+     * @return if the removal was successful
+     */
     public boolean remove( int id, Card c )
     {
         ArrayList<Card> hand = id == 1 ? game.getHand1() : game.getHand2();
