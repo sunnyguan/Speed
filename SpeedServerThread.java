@@ -143,7 +143,7 @@ public class SpeedServerThread extends Thread
                 {
                     ArrayList<Card> hand = getHand( id );
                     Stack<Card> deck = getDeck( id );
-                    int refillIndex = Integer.parseInt( inputLine.split( "|" )[1] );
+                    int refillIndex = Integer.parseInt( inputLine.split( "\\|" )[1] );
 
                     while ( hand.size() < 5 )
                     {

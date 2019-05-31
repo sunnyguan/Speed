@@ -132,6 +132,7 @@ public class Player
         String hostName = ip;
         int portNumber = port;
 
+        oppoHand = new boolean[5];
         for(int i = 0; i < 5; i++) {
             oppoHand[i] = true;
         }
@@ -200,7 +201,7 @@ public class Player
         out.println( "NAME|" + name );
     }
     
-    private boolean[] oppoHand;
+    private boolean[] oppoHand ;
 
     
     
@@ -239,8 +240,8 @@ public class Player
                     else if ( fromServer.startsWith( "DECKEMPTY2" ) )
                     {
                         deck2Empty = true;
-                        int deactIndex = Integer.parseInt( fromServer.split( "|" )[1] );
-                        oppoHand[refillIndex] = false;
+                        int deactIndex = Integer.parseInt( fromServer.split( "\\|" )[1] );
+                        oppoHand[deactIndex] = false;
                     }
                     else if ( fromServer.startsWith( "SETPILE" ) )
                     {

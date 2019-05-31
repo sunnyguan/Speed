@@ -171,14 +171,14 @@ public class Speed
         Speed s = new Speed();
         s.startServer();
     }
-
+    
     public static final int PORT = 4441;
 
     private static final boolean TESTING = false;
 
     public void startServer()
     {
-        String ip = getIP();
+        String ip = "192.168.1.131";// manually enter ip here ! 
         if ( ip.equals( "ERR" ) )
         {
             System.out.println( "Could not get IP from command line. " );
@@ -221,6 +221,7 @@ public class Speed
         {
             Scanner s = new Scanner( System.in );
             String fromUser = s.nextLine();
+            
             while ( !fromUser.equals( null ) )
             {
                 if ( fromUser.toLowerCase().equals( "quit" ) || fromUser.toLowerCase().equals( "exit" ) )
