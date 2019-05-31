@@ -235,6 +235,18 @@ public class GameGUI extends JFrame
     {
         myCards = new ArrayList<CardPanel>();
         ArrayList<CardPanel> theirCards = new ArrayList<CardPanel>();
+        
+        while(player.getHand().size() != 5) {
+            try
+            {
+                Thread.sleep( 200 );
+            }
+            catch ( InterruptedException e1 )
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
         ArrayList<Card> h1 = player.getHand();
         ImageIcon back = new ImageIcon( GameGUI.class.getResource( "/images/back.png" ) );
         for ( int i = 0; i < h1.size(); i++ )
@@ -298,7 +310,10 @@ public class GameGUI extends JFrame
                     {
                         if ( player.getHand().get( i ).isDeact() )
                         {
-                            myCards.get( i ).setDeact( true );
+                            if(!myCards.get( i ).isDeact()) {
+                                myCards.get( i ).setDeact( true );
+                                pane.remove( myCards.get( i ) );
+                            }
                             // System.out.println(i + " deactivated.");
                             continue;
                         }
