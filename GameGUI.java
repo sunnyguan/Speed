@@ -128,7 +128,12 @@ public class GameGUI extends JFrame
         lblStuck.setForeground( new Color( 255, 255, 255 ) );
         lblStuck.setBounds( 505, 148, 61, 16 );
         game.getLayeredPane().add( lblStuck );
-
+        
+        JLabel myName = new JLabel( "" );
+        myName.setForeground( new Color( 255, 255, 255 ) );
+        myName.setBounds( 455, 490, 150, 16 );
+        game.getLayeredPane().add( myName );
+        
         // instruction page
         instructionButton.addMouseListener( new MouseAdapter()
         {
@@ -160,6 +165,10 @@ public class GameGUI extends JFrame
                 {
                     ip = "192.168.1.131";
                 }
+                
+                String nameStr = nameText.getText();
+                myName.setText( nameStr );
+                
                 player.init( ip );
                 // setName
                 player.setName( nameText.getText() );
@@ -200,7 +209,7 @@ public class GameGUI extends JFrame
         } );
 
     }
-
+    
     private JRadioButton stuckButton;
 
     private Player player;

@@ -82,6 +82,7 @@ public class SpeedServerThread extends Thread
             }
             out.println( "SETPILE|" + game.getCentralPile1().get( 0 ) + "|1" );
             out.println( "SETPILE|" + game.getCentralPile2().get( 0 ) + "|2" );
+            
             while ( ( inputLine = in.readLine() ) != null )
             {
                 if ( inputLine.equals( "STUCK" ) )

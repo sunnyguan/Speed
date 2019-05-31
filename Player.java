@@ -119,13 +119,18 @@ public class Player
 
     String name = "";
 
-    String oppName = "";
-
+    String oppName = "NULL";
+    
     Socket kkSocket;
 
     PrintWriter out;
 
     BufferedReader in;
+    
+    public String getOppName()
+    {
+        return oppName;
+    }
 
     public void initialize( String ip, int port ) throws UnknownHostException, IOException
     {
