@@ -163,7 +163,7 @@ public class SpeedServerThread extends Thread
                 else if ( inputLine.startsWith( "FGAMEOVER" ) )
                 { // TODO testing only!
                     gameOverAction();
-                    break;
+                    // break;
                 }
 
                 System.out.println( inputLine );

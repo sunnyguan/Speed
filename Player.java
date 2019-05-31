@@ -255,12 +255,12 @@ public class Player
                     else if ( fromServer.startsWith( "YOUWIN" ) )
                     {
                         state = 2;
-                        break;
+                        // break;
                     }
                     else if ( fromServer.startsWith( "YOULOSE" ) )
                     {
                         state = 0;
-                        break;
+                        // break;
                     }
                 }
             }
