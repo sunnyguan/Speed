@@ -65,5 +65,6 @@ public class SimpleAnimation extends JPanel {
             createAndShowGui();
          }
       });
+      // test whether the jframe is working correct
    }
 }
